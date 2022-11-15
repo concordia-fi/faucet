@@ -3,8 +3,8 @@ name = "faucet"
 version = "0.2.7"
 
 [dependencies]
-AptosFramework = { local = '../aptos-core/aptos-move/framework/aptos-framework' }
-TestCoins = { local = "../test-coins" }
+AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "main" }
+TestCoins = { git = "https://github.com/concordia-fi/test-coins.git", rev = "main" }
 
 [addresses]
 account = '_'
