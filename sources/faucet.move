@@ -4,7 +4,7 @@ module account::faucet {
     use std::string::utf8;
     use aptos_framework::timestamp;
     use aptos_framework::coin::{Self, Coin};
-    use test_coins::coins::{register_coins, mint_coin};
+    use test_coins::coins::{register_coins, mint_coin, USDT};
 
     // Errors.
 
@@ -130,10 +130,17 @@ module account::faucet {
     }
 
     public entry fun init_demo_faucet<CoinType>(account: &signer, amount_to_deposit: u64, per_request: u64, period: u64){
-        register_coins(account);
-        coin::register<CoinType>(account);
-        mint_coin<CoinType>(account, signer::address_of(account), amount_to_deposit);
-        create_faucet<CoinType>(account, amount_to_deposit, per_request, period)
+        if (!exists<CoinInfo<CoinType>>(signer::address_of(account))){
+            register_coins(account);
+        };
+        if (!is_account_registered<CoinType>(account_addr)) {
+            coin::register<CoinType>(account);
+            mint_coin<CoinType>(account, signer::address_of(account), amount_to_deposit);
+        };
+
+        if (!exists<Faucet<CoinType>>(account_addr), ERR_FAUCET_EXISTS)) {
+            create_faucet<CoinType>(account, amount_to_deposit, per_request, period)
+        };
     }
 
     /// Changes faucet settings on `account`.
